@@ -25,7 +25,7 @@ fi
 # What do we need anyway
 debconf-apt-progress -- apt-get update
 debconf-apt-progress -- apt-get -y upgrade
-debconf-apt-progress -- apt-get -y install debconf-utils dnsutils unzip whiptail git build-essential alsa-base alsa-utils stunnel4 html2text
+debconf-apt-progress -- apt-get -y install debconf-utils dnsutils unzip whiptail git build-essential html2text p7zip-rar p7zip-full
 #--------------------------------------------------------------------------------------------------------------------------------
 
 SECTION="Basic configuration"
@@ -44,10 +44,10 @@ HOSTNAMESHORT="$1"
 
 source "functions.sh"
 
-whiptail --ok-button "Install" --title "Debian micro home server installation (c) Igor Pecovnik" --checklist --separate-output "\nIP:   $serverIP\nFQDN: $HOSTNAMEFQDN\n\nChoose what you want to install:" 20 78 9 \
-"Samba" "Windows compatible file sharing        " off \
-"TV headend" "TV streaming / proxy" off \
-"BitTorrent Sync" "Personal cloud" off \
+whiptail --ok-button "Install" --title "DSE Kubuntu afterinstall config" --checklist --separate-output "\nIP:   $serverIP\nFQDN: $HOSTNAMEFQDN\n\nChoose what you want to install:" 20 78 9 \
+"Skype" "Install Skype        " off \
+"Teamviewer" "Install Teamviewer" off \
+"Libreoffice" "Personal cloud" off \
 "SoftEther VPN server" "Advanced VPN solution" off \
 "CUPS" "Printing" off \
 "Scanner" "Control your scanner with buttons, OCR" off \
@@ -59,8 +59,8 @@ while read choice
 do
    case $choice in
 		   "Samba") 			ins_samba="true";;
-                   "TV headend") 		ins_tvheadend="true";;
-                   "BitTorrent Sync") 	  	ins_btsync="true";;
+                   "Teamviwer") 		ins_teamvi="true";;
+                   "Libreoffice") 	  	ins_libre="true";;
                    "SoftEther VPN server") 	ins_vpn_server="true";;
 		   "CUPS") 			ins_cups="true";;
 		   "Scanner") 			ins_scaner_and_scanbuttons="true";;
@@ -75,8 +75,8 @@ done < results
 
 
 if [[ "$ins_samba" == "true" ]]; 			then install_samba; 			fi
-if [[ "$ins_tvheadend" == "true" ]]; 			then install_tvheadend; 		fi
-if [[ "$ins_btsync" == "true" ]]; 			then install_btsync; 			fi
+if [[ "$ins_teamvi" == "true" ]]; 			then install_teamviewer; 		fi
+if [[ "$ins_libre" == "true" ]]; 			then install_libreoffice; 			fi
 if [[ "$ins_vpn_server" == "true" ]]; 			then install_vpn_server; 		fi
 if [[ "$ins_cups" == "true" ]]; 			then install_cups; 			fi
 if [[ "$ins_scanner_and_scanbuttons" == "true" ]];	then install_scaner_and_scanbuttons; 	fi
@@ -98,7 +98,6 @@ if [[ "$ins_ispconfig" == "true" ]];                    then
 								server="apache"
 								install_Apache
 							fi
-							create_ispconfig_configuration
-				   			install_PureFTPD; install_Fail2BanDovecot; install_Fail2BanRulesDovecot; install_ISPConfig
+							install_PureFTPD; install_Fail2BanDovecot; install_Fail2BanRulesDovecot; install_ISPConfig
 fi
 rm results

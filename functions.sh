@@ -18,37 +18,48 @@ echo "$HOSTNAMESHORT" > /etc/hostname
 /etc/init.d/hostname.sh start >/dev/null 2>&1
 }
 
-
-create_ispconfig_configuration (){
-#--------------------------------------------------------------------------------------------------------------------------------
-# ISPConfig autoconfiguration
-#--------------------------------------------------------------------------------------------------------------------------------
-cat > /tmp/isp.conf.php <<EOF
-<?php
-\$autoinstall['language'] = 'en'; // de, en (default)
-\$autoinstall['install_mode'] = 'standard'; // standard (default), expert
-
-\$autoinstall['hostname'] = '$HOSTNAMEFQDN'; // default
-\$autoinstall['mysql_hostname'] = 'localhost'; // default: localhost
-\$autoinstall['mysql_root_user'] = 'root'; // default: root
-\$autoinstall['mysql_root_password'] = '$mysql_pass';
-\$autoinstall['mysql_database'] = 'dbispconfig'; // default: dbispcongig
-\$autoinstall['mysql_charset'] = 'utf8'; // default: utf8
-\$autoinstall['http_server'] = '$server'; // apache (default), nginx
-\$autoinstall['ispconfig_port'] = '8080'; // default: 8080
-\$autoinstall['ispconfig_use_ssl'] = 'y'; // y (default), n
-
-/* SSL Settings */
-\$autoinstall['ssl_cert_country'] = 'AU';
-\$autoinstall['ssl_cert_state'] = 'Some-State';
-\$autoinstall['ssl_cert_locality'] = 'Chicago';
-\$autoinstall['ssl_cert_organisation'] = 'Internet Widgits Pty Ltd';
-\$autoinstall['ssl_cert_organisation_unit'] = 'IT department';
-\$autoinstall['ssl_cert_common_name'] = \$autoinstall['hostname'];
-?>
-EOF
+install_skype (){
+wget http://www.skype.com/go/getskype-linux-beta-ubuntu-64 -O skype.deb
+dpkg -i skype.deb
+sudo apt-get install -f -y
+rm -f skype.deb
 }
 
+install_teamviewer(){
+wget http://download.teamviewer.com/download/teamviewer_i386.deb
+sudo dpkg -i teamviewer_i386.deb
+sudo apt-get install -f -y
+rm -f teamviewer_i386.deb
+}
+
+install_chrome(){
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+dpkg -i google-chrome-stable_current_amd64.deb
+sudo apt-get install -f -y
+rm -f google-chrome-stable_current_amd64.deb
+}
+
+install_zoiper32(){
+cd /tmp
+wget http://192.168.0.65/install/Zoiper32.run
+chmod +x Zoiper32.run
+./Zoiper32.run
+rm -f Zoiper32.run
+}
+
+install_zoiper64(){
+cd /tmp
+wget http://192.168.0.65/install/Zoiper64.run
+chmod +x Zoiper64.run
+./Zoiper64.run
+rm -f Zoiper64.run
+}
+
+install_libreoffice(){
+add-apt-repository -y ppa:libreoffice/ppa -y
+debconf-apt-progress -- apt-get update
+debconf-apt-progress -- apt-get install libreoffice
+}
 
 install_sugarcrm (){
 #--------------------------------------------------------------------------------------------------------------------------------
@@ -241,20 +252,6 @@ service samba restart
 } 
 
 
-install_temper (){
-#--------------------------------------------------------------------------------------------------------------------------------
-# Install USB temperature sensor
-#--------------------------------------------------------------------------------------------------------------------------------
-debconf-apt-progress -- apt-get -y install libusb-dev libusb-1.0-0-dev
-cd /tmp
-wget https://github.com/igorpecovnik/Debian-micro-home-server/blob/next/src/temper_v14_altered.tgz?raw=true -O - | tar -xz
-cd temperv14
-make
-make rules-install
-cp temperv14 /usr/bin/temper
-}
-
-
 install_scaner_and_scanbuttons (){
 #--------------------------------------------------------------------------------------------------------------------------------
 # Install Scanner buttons
@@ -425,9 +422,7 @@ install_Virus (){
 #--------------------------------------------------------------------------------------------------------------------------------
 # Install Amavisd-new, SpamAssassin, And Clamav
 #--------------------------------------------------------------------------------------------------------------------------------
-debconf-apt-progress -- apt-get -y install amavisd-new spamassassin clamav clamav-daemon zoo unzip bzip2 arj p7zip unrar ripole rpm nomarch lzop cabextract apt-listchanges libnet-ldap-perl libauthen-sasl-perl clamav-docs daemon libio-string-perl libio-socket-ssl-perl libnet-ident-perl zip libnet-dns-perl
-/etc/init.d/spamassassin stop
-insserv -rf spamassassin
+debconf-apt-progress -- apt-get -y install unzip bzip2 arj p7zip unrar lzop zip
 }
 
 
